@@ -5,6 +5,8 @@ from rclpy.node import Node
 from sensor_msgs.msg import Image
 import threading
 import time
+import cv2
+from cv_bridge import CvBridge
 
 class RL_subscriber(Node):
     def __init__(self):
@@ -30,10 +32,16 @@ class RL_subscriber(Node):
         
 def main(args=None):
     rclpy.init(args=args)
+    cvBridge = CvBridge()
 
     # Declare node and spin it
     node = RL_subscriber()
-    rclpy.spin(node)
+    threading.Thread(target=rclpy.spin, args=(node,)).start()
+    while True:
+        time.sleep(1)
+        cv2.destroyAllWindows()
+        cv2.imshow("Front cam", cvBridge.imgmsg_to_cv2(node.get_image(), "bgr8"))
+        cv2.waitKey(40)
     node.destroy_node()
     rclpy.shutdown()
 
