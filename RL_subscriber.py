@@ -42,6 +42,26 @@ def main(args=None):
         cv2.destroyAllWindows()
         cv2.imshow("Front cam", cvBridge.imgmsg_to_cv2(node.get_image(), "bgr8"))
         cv2.waitKey(40)
+
+        # Simple max pooling algorithm for image
+        net = cv2.dnn.Net()
+        params = {
+            "kernel_w": 3,
+            "kernel_h": 3,
+            "stride_w": 3,
+            "stride_h": 3,
+            "pool": "max",
+        }
+        net.addLayerToPrev("pool", "Pooling", cv2.CV_32F, params)
+
+        image = cvBridge.imgmsg_to_cv2(node.get_image(), "bgr8")
+        net.setInput(cv2.dnn.blobFromImage(image))
+        out = net.forward()
+
+        cv2.imshow("Pooled image", cv2.dnn.imagesFromBlob(out)[0].astype("uint8"))
+        cv2.waitKey(40)
+
+
     node.destroy_node()
     rclpy.shutdown()
 
