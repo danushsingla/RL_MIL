@@ -9,9 +9,16 @@ SHAPE = [50,80,3]
 #to be finished
 class SubEnv(gym.Env):
     def __init__(self):
-        self.observation_space = spaces.Box(low=0.0, high=255.0, shape=(SHAPE[0], SHAPE[1], SHAPE[2]), dtype=uint8)
-        
+	#For camera rgb obs space
+        self.observation_space = spaces.Dict({
+	spaces.Box(low=0, high=255, shape=(SHAPE[0], SHAPE[1], SHAPE[2]), dtype=uint8) 
 
+	#linear orientation
+	spaces.Box(low=-50, high=50, shape=(3,)
+	#angular orientation
+	sapce.Box(low=-360, high=360, shape=(3,)
+
+	#must still do linear+angular velcoty 
     def _get_obs(self):
         # Get image from RL_subscriber through pipe
         with open("image_pipe", 'rb') as pipe:
